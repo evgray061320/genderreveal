@@ -504,6 +504,14 @@
                 -1px 1px 0 #000;
             margin-top: 30px;
             line-height: 1.8;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .instructions.show {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .reveal-message {
@@ -612,6 +620,7 @@
         const pokeballWrappers = document.querySelectorAll('.pokeball-wrapper');
         const pokeballs = document.querySelectorAll('.pokeball');
         const triangleIndicator = document.getElementById('triangleIndicator');
+        const instructions = document.querySelector('.instructions');
         const revealMessage = document.getElementById('revealMessage');
         const dueDate = document.getElementById('dueDate');
         const openingAudio = document.getElementById('openingAudio');
@@ -733,6 +742,13 @@
                     pokeballWrappers[2].classList.add('show');
                 }
             }, 9100); // 6100ms + 3000ms (3 second delay)
+            
+            // Show instructions after all pokeballs are visible
+            setTimeout(() => {
+                if (instructions) {
+                    instructions.classList.add('show');
+                }
+            }, 9200); // 9100ms + 100ms (slight delay after last pokeball)
             
             // Fade out opening music 2 seconds after last pokeball appears
             setTimeout(() => {
