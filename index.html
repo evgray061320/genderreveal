@@ -612,6 +612,7 @@
         // State
         let currentSelection = 0;
         const totalPokeballs = 3;
+        let animationsStarted = false; // Prevent pokeball clicks until animations start
         
         // Elements
         const startOverlay = document.getElementById('startOverlay');
@@ -759,12 +760,19 @@
         }
         
         // Play opening music on first user interaction (click or keypress)
-        function handleFirstInteraction() {
+        function handleFirstInteraction(e) {
+            // Prevent event from bubbling to pokeballs
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            
             if (startOverlay) {
                 startOverlay.classList.add('hide');
                 // remove after fade so it doesn't sit in the DOM
                 setTimeout(() => startOverlay.remove(), 350);
             }
+            animationsStarted = true; // Allow pokeball interactions now
             startOpeningMusic();
             startAnimations();
         }
@@ -789,6 +797,11 @@
         
         // Handle keyboard navigation
         document.addEventListener('keydown', (e) => {
+            // Don't allow navigation/selection until animations have started
+            if (!animationsStarted) {
+                return;
+            }
+            
             if (e.key === 'ArrowLeft') {
                 currentSelection = (currentSelection - 1 + totalPokeballs) % totalPokeballs;
                 updateIndicator();
@@ -802,7 +815,12 @@
         
         // Handle click on pokeballs
         pokeballWrappers.forEach((wrapper, index) => {
-            wrapper.addEventListener('click', () => {
+            wrapper.addEventListener('click', (e) => {
+                // Don't allow pokeball selection until animations have started
+                if (!animationsStarted) {
+                    e.stopPropagation();
+                    return;
+                }
                 currentSelection = index;
                 updateIndicator();
                 selectPokeball(index);
