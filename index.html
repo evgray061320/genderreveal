@@ -101,6 +101,14 @@
             letter-spacing: 2px;
             position: relative;
             z-index: 10;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .title.show {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .pokeball-container {
@@ -119,6 +127,14 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .pokeball-wrapper.show {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .pokeball {
@@ -497,6 +513,13 @@
     </style>
 </head>
 <body>
+    <!-- Audio elements -->
+    <audio id="openingAudio" preload="auto">
+        <source src="opening.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="acquisitionAudio" preload="auto">
+        <source src="pokemon acquisition.mp3" type="audio/mpeg">
+    </audio>
     <div class="game-container">
         <h1 class="title">CHOOSE YOUR CHARACTER</h1>
         
@@ -543,11 +566,94 @@
         const totalPokeballs = 3;
         
         // Elements
+        const title = document.querySelector('.title');
+        const pokeballContainer = document.querySelector('.pokeball-container');
         const pokeballWrappers = document.querySelectorAll('.pokeball-wrapper');
         const pokeballs = document.querySelectorAll('.pokeball');
         const triangleIndicator = document.getElementById('triangleIndicator');
         const revealMessage = document.getElementById('revealMessage');
         const dueDate = document.getElementById('dueDate');
+        const openingAudio = document.getElementById('openingAudio');
+        const acquisitionAudio = document.getElementById('acquisitionAudio');
+        
+        // Track if opening music has been started
+        let openingMusicStarted = false;
+        
+        // Function to fade out audio
+        function fadeOutAudio(audio, duration = 2000) {
+            if (!audio) return;
+            
+            const startVolume = audio.volume;
+            const fadeStep = startVolume / (duration / 100);
+            
+            const fadeInterval = setInterval(() => {
+                if (audio.volume > 0) {
+                    audio.volume = Math.max(0, audio.volume - fadeStep);
+                } else {
+                    audio.pause();
+                    audio.volume = startVolume; // Reset volume for next time
+                    clearInterval(fadeInterval);
+                }
+            }, 100);
+        }
+        
+        // Function to start opening music (called on first user interaction)
+        function startOpeningMusic() {
+            if (!openingMusicStarted && openingAudio) {
+                openingMusicStarted = true;
+                openingAudio.volume = 1;
+                openingAudio.play().catch(e => {
+                    console.log('Could not play opening audio:', e);
+                });
+            }
+        }
+        
+        // Sequence animations: title first, then pokeballs one at a time with 3 second delays
+        function startAnimations() {
+            // Show title first
+            setTimeout(() => {
+                if (title) {
+                    title.classList.add('show');
+                }
+            }, 100);
+            
+            // Show first pokeball 3 seconds after title appears
+            setTimeout(() => {
+                if (pokeballWrappers[0]) {
+                    pokeballWrappers[0].classList.add('show');
+                }
+            }, 3100); // 100ms (title) + 3000ms (3 second delay)
+            
+            // Show second pokeball 3 seconds after first
+            setTimeout(() => {
+                if (pokeballWrappers[1]) {
+                    pokeballWrappers[1].classList.add('show');
+                }
+            }, 6100); // 3100ms + 3000ms (3 second delay)
+            
+            // Show third pokeball 3 seconds after second
+            setTimeout(() => {
+                if (pokeballWrappers[2]) {
+                    pokeballWrappers[2].classList.add('show');
+                }
+            }, 9100); // 6100ms + 3000ms (3 second delay)
+            
+            // Fade out opening music 2 seconds after last pokeball appears
+            setTimeout(() => {
+                if (openingAudio && openingMusicStarted) {
+                    fadeOutAudio(openingAudio, 2000);
+                }
+            }, 11100); // 9100ms + 2000ms (2 second delay)
+        }
+        
+        // Play opening music on first user interaction (click or keypress)
+        function handleFirstInteraction() {
+            startOpeningMusic();
+            startAnimations();
+        }
+        
+        document.addEventListener('click', handleFirstInteraction, { once: true });
+        document.addEventListener('keydown', handleFirstInteraction, { once: true });
         
         // Update due date
         dueDate.textContent = `Coming ${DUE_DATE}`;
@@ -590,6 +696,14 @@
         function selectPokeball(index) {
             const pokeball = pokeballs[index];
             const reveal = document.getElementById(`reveal${index}`);
+            
+            // Play acquisition sound
+            if (acquisitionAudio) {
+                acquisitionAudio.currentTime = 0; // Reset to start
+                acquisitionAudio.play().catch(e => {
+                    console.log('Could not play acquisition audio:', e);
+                });
+            }
             
             // Add shake animation
             pokeball.classList.add('selected');
