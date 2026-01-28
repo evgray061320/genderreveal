@@ -60,6 +60,43 @@
             z-index: 0;
             image-rendering: pixelated;
         }
+
+        /* Click-to-begin overlay */
+        .start-overlay {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            z-index: 9999;
+            background: radial-gradient(circle, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 45%, rgba(0,0,0,0) 70%);
+            pointer-events: none; /* allow clicks to pass through to trigger audio */
+        }
+
+        .start-overlay .start-message {
+            pointer-events: none;
+            padding: 14px 18px;
+            border: 3px solid #000;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #000;
+            text-align: center;
+            line-height: 1.35;
+            text-transform: uppercase;
+            box-shadow:
+                0 14px 0 rgba(0,0,0,0.25),
+                0 0 0 3px rgba(255,255,255,0.25);
+            animation: startPulse 1.25s ease-in-out infinite;
+        }
+
+        @keyframes startPulse {
+            0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
+            50% { transform: translateY(-6px) scale(1.02); filter: drop-shadow(0 0 14px rgba(255,255,255,0.6)); }
+        }
+
+        .start-overlay.hide {
+            opacity: 0;
+            transition: opacity 300ms ease-out;
+        }
         
         .game-container {
             width: 100%;
@@ -513,6 +550,9 @@
     </style>
 </head>
 <body>
+    <div class="start-overlay" id="startOverlay" aria-hidden="true">
+        <div class="start-message">CLICK ANYWHERE TO BEGIN...<br>SOUND UP!</div>
+    </div>
     <!-- Audio elements -->
     <audio id="openingAudio" preload="auto">
         <source src="opening.mp3" type="audio/mpeg">
@@ -566,6 +606,7 @@
         const totalPokeballs = 3;
         
         // Elements
+        const startOverlay = document.getElementById('startOverlay');
         const title = document.querySelector('.title');
         const pokeballContainer = document.querySelector('.pokeball-container');
         const pokeballWrappers = document.querySelectorAll('.pokeball-wrapper');
@@ -578,6 +619,33 @@
         
         // Track if opening music has been started
         let openingMusicStarted = false;
+
+        // WebAudio (more reliable fade-out on mobile than audio.volume)
+        let audioCtx = null;
+        let openingSourceNode = null;
+        let openingGainNode = null;
+
+        function ensureOpeningAudioGraph() {
+            if (!openingAudio) return false;
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return false;
+
+            if (!audioCtx) audioCtx = new Ctx();
+            // iOS may start suspended until first gesture
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+
+            if (!openingSourceNode) {
+                openingSourceNode = audioCtx.createMediaElementSource(openingAudio);
+                openingGainNode = audioCtx.createGain();
+                openingGainNode.gain.value = 1;
+                openingSourceNode.connect(openingGainNode);
+                openingGainNode.connect(audioCtx.destination);
+            }
+
+            return true;
+        }
         
         // Function to fade out audio
         function fadeOutAudio(audio, duration = 2000) {
@@ -587,17 +655,38 @@
                 setTimeout(() => fadeOutAudio(audio, duration), 300);
                 return;
             }
-            
-            const startVolume = audio.volume;
-            const fadeStep = startVolume / (duration / 100);
-            
+
+            // Prefer WebAudio fade (works on mobile where audio.volume is limited)
+            if (audio === openingAudio && ensureOpeningAudioGraph() && openingGainNode) {
+                const now = audioCtx.currentTime;
+                openingGainNode.gain.cancelScheduledValues(now);
+                openingGainNode.gain.setValueAtTime(openingGainNode.gain.value, now);
+                openingGainNode.gain.linearRampToValueAtTime(0.0001, now + duration / 1000);
+
+                setTimeout(() => {
+                    try { audio.pause(); } catch (_) {}
+                    // reset gain for next time
+                    const t = audioCtx.currentTime;
+                    openingGainNode.gain.cancelScheduledValues(t);
+                    openingGainNode.gain.setValueAtTime(1, t);
+                }, duration + 50);
+                return;
+            }
+
+            // Fallback: volume step-down (works on many desktop browsers)
+            const startVolume = typeof audio.volume === 'number' ? audio.volume : 1;
+            const steps = Math.max(1, Math.floor(duration / 100));
+            let currentStep = 0;
+
             const fadeInterval = setInterval(() => {
-                if (audio.volume > 0) {
-                    audio.volume = Math.max(0, audio.volume - fadeStep);
-                } else {
-                    audio.pause();
-                    audio.volume = startVolume; // Reset volume for next time
+                currentStep++;
+                const v = Math.max(0, startVolume * (1 - currentStep / steps));
+                try { audio.volume = v; } catch (_) {}
+
+                if (currentStep >= steps) {
                     clearInterval(fadeInterval);
+                    try { audio.pause(); } catch (_) {}
+                    try { audio.volume = startVolume; } catch (_) {}
                 }
             }, 100);
         }
@@ -606,7 +695,9 @@
         function startOpeningMusic() {
             if (!openingMusicStarted && openingAudio) {
                 openingMusicStarted = true;
-                openingAudio.volume = 1;
+                // Ensure WebAudio graph exists so fade-out works on mobile
+                ensureOpeningAudioGraph();
+                try { openingAudio.volume = 1; } catch (_) {}
                 openingAudio.play().catch(e => {
                     console.log('Could not play opening audio:', e);
                 });
@@ -653,6 +744,11 @@
         
         // Play opening music on first user interaction (click or keypress)
         function handleFirstInteraction() {
+            if (startOverlay) {
+                startOverlay.classList.add('hide');
+                // remove after fade so it doesn't sit in the DOM
+                setTimeout(() => startOverlay.remove(), 350);
+            }
             startOpeningMusic();
             startAnimations();
         }
