@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Pokemon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #87CEEB;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            image-rendering: pixelated;
+            position: relative;
+        }
+        
+        /* Sky with detailed 8-bit clouds */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 55%;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'%3E%3Crect fill='%2387CEEB' x='0' y='0' width='320' height='180'/%3E%3Crect fill='%23FFFFFF' x='20' y='30' width='60' height='20'/%3E%3Crect fill='%23FFFFFF' x='30' y='20' width='40' height='15'/%3E%3Crect fill='%23FFFFFF' x='40' y='50' width='20' height='15'/%3E%3Crect fill='%23FFFFFF' x='10' y='40' width='20' height='10'/%3E%3Crect fill='%23FFFFFF' x='70' y='35' width='20' height='10'/%3E%3Crect fill='%23FFFFFF' x='120' y='50' width='50' height='18'/%3E%3Crect fill='%23FFFFFF' x='130' y='40' width='30' height='12'/%3E%3Crect fill='%23FFFFFF' x='140' y='68' width='15' height='12'/%3E%3Crect fill='%23FFFFFF' x='110' y='55' width='15' height='8'/%3E%3Crect fill='%23FFFFFF' x='170' y='48' width='15' height='8'/%3E%3Crect fill='%23FFFFFF' x='240' y='25' width='55' height='22'/%3E%3Crect fill='%23FFFFFF' x='250' y='15' width='35' height='15'/%3E%3Crect fill='%23FFFFFF' x='260' y='47' width='18' height='14'/%3E%3Crect fill='%23FFFFFF' x='230' y='32' width='18' height='10'/%3E%3Crect fill='%23FFFFFF' x='285' y='30' width='18' height='10'/%3E%3Crect fill='%23FFFFFF' x='50' y='100' width='45' height='16'/%3E%3Crect fill='%23FFFFFF' x='60' y='90' width='25' height='12'/%3E%3Crect fill='%23FFFFFF' x='65' y='116' width='12' height='10'/%3E%3Crect fill='%23FFFFFF' x='40' y='105' width='15' height='8'/%3E%3Crect fill='%23FFFFFF' x='85' y='102' width='15' height='8'/%3E%3Crect fill='%23FFFFFF' x='180' y='110' width='40' height='15'/%3E%3Crect fill='%23FFFFFF' x='190' y='100' width='20' height='12'/%3E%3Crect fill='%23FFFFFF' x='195' y='125' width='10' height='10'/%3E%3Crect fill='%23FFFFFF' x='170' y='112' width='12' height='8'/%3E%3Crect fill='%23FFFFFF' x='210' y='108' width='12' height='8'/%3E%3C/svg%3E");
+            background-size: 320px 180px;
+            background-position: 0 0;
+            background-repeat: repeat-x;
+            z-index: 0;
+            image-rendering: pixelated;
+        }
+        
+        /* Detailed 8-bit tall grass */
+        body::before {
+            content: "";
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 45%;
+            background: #7CB342;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect fill='%237CB342' x='0' y='0' width='160' height='160'/%3E%3Crect fill='%23558B2F' x='0' y='140' width='160' height='20'/%3E%3Crect fill='%234CAF50' x='10' y='130' width='8' height='30'/%3E%3Crect fill='%234CAF50' x='15' y='125' width='6' height='35'/%3E%3Crect fill='%23558B2F' x='20' y='135' width='8' height='25'/%3E%3Crect fill='%234CAF50' x='25' y='128' width='6' height='32'/%3E%3Crect fill='%23558B2F' x='30' y='132' width='7' height='28'/%3E%3Crect fill='%234CAF50' x='35' y='126' width='6' height='34'/%3E%3Crect fill='%23558B2F' x='40' y='130' width='8' height='30'/%3E%3Crect fill='%234CAF50' x='45' y='124' width='6' height='36'/%3E%3Crect fill='%23558B2F' x='50' y='133' width='7' height='27'/%3E%3Crect fill='%234CAF50' x='55' y='127' width='6' height='33'/%3E%3Crect fill='%23558B2F' x='60' y='131' width='8' height='29'/%3E%3Crect fill='%234CAF50' x='65' y='125' width='6' height='35'/%3E%3Crect fill='%23558B2F' x='70' y='134' width='7' height='26'/%3E%3Crect fill='%234CAF50' x='75' y='128' width='6' height='32'/%3E%3Crect fill='%23558B2F' x='80' y='132' width='8' height='28'/%3E%3Crect fill='%234CAF50' x='85' y='126' width='6' height='34'/%3E%3Crect fill='%23558B2F' x='90' y='130' width='7' height='30'/%3E%3Crect fill='%234CAF50' x='95' y='124' width='6' height='36'/%3E%3Crect fill='%23558B2F' x='100' y='133' width='8' height='27'/%3E%3Crect fill='%234CAF50' x='105' y='127' width='6' height='33'/%3E%3Crect fill='%23558B2F' x='110' y='131' width='7' height='29'/%3E%3Crect fill='%234CAF50' x='115' y='125' width='6' height='35'/%3E%3Crect fill='%23558B2F' x='120' y='134' width='8' height='26'/%3E%3Crect fill='%234CAF50' x='125' y='128' width='6' height='32'/%3E%3Crect fill='%23558B2F' x='130' y='132' width='7' height='28'/%3E%3Crect fill='%234CAF50' x='135' y='126' width='6' height='34'/%3E%3Crect fill='%23558B2F' x='140' y='130' width='8' height='30'/%3E%3Crect fill='%234CAF50' x='145' y='124' width='6' height='36'/%3E%3Crect fill='%23558B2F' x='150' y='133' width='7' height='27'/%3E%3Crect fill='%234CAF50' x='155' y='127' width='5' height='33'/%3E%3Crect fill='%2366893E' x='5' y='145' width='6' height='15'/%3E%3Crect fill='%2366893E' x='12' y='142' width='5' height='18'/%3E%3Crect fill='%2366893E' x='22' y='148' width='6' height='12'/%3E%3Crect fill='%2366893E' x='28' y='144' width='5' height='16'/%3E%3Crect fill='%2366893E' x='38' y='146' width='6' height='14'/%3E%3Crect fill='%2366893E' x='44' y='143' width='5' height='17'/%3E%3Crect fill='%2366893E' x='52' y='147' width='6' height='13'/%3E%3Crect fill='%2366893E' x='58' y='144' width='5' height='16'/%3E%3Crect fill='%2366893E' x='68' y='145' width='6' height='15'/%3E%3Crect fill='%2366893E' x='74' y='142' width='5' height='18'/%3E%3Crect fill='%2366893E' x='82' y='148' width='6' height='12'/%3E%3Crect fill='%2366893E' x='88' y='144' width='5' height='16'/%3E%3Crect fill='%2366893E' x='98' y='146' width='6' height='14'/%3E%3Crect fill='%2366893E' x='104' y='143' width='5' height='17'/%3E%3Crect fill='%2366893E' x='112' y='147' width='6' height='13'/%3E%3Crect fill='%2366893E' x='118' y='144' width='5' height='16'/%3E%3Crect fill='%2366893E' x='128' y='145' width='6' height='15'/%3E%3Crect fill='%2366893E' x='134' y='142' width='5' height='18'/%3E%3Crect fill='%2366893E' x='142' y='148' width='6' height='12'/%3E%3Crect fill='%2366893E' x='148' y='144' width='5' height='16'/%3E%3Crect fill='%2366893E' x='152' y='146' width='5' height='14'/%3E%3C/svg%3E");
+            background-size: 160px 160px;
+            background-position: 0 0;
+            background-repeat: repeat-x;
+            z-index: 0;
+            image-rendering: pixelated;
+        }
+        
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.1s;
+        }
+        
+        .game-container.shake {
+            animation: screenShake 0.5s ease-in-out;
+        }
+        
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5px, -3px) rotate(-1deg); }
+            20% { transform: translate(5px, 3px) rotate(1deg); }
+            30% { transform: translate(-4px, -2px) rotate(-0.5deg); }
+            40% { transform: translate(4px, 2px) rotate(0.5deg); }
+            50% { transform: translate(-3px, -1px) rotate(-0.3deg); }
+            60% { transform: translate(3px, 1px) rotate(0.3deg); }
+            70% { transform: translate(-2px, 0) rotate(-0.1deg); }
+            80% { transform: translate(2px, 0) rotate(0.1deg); }
+            90% { transform: translate(-1px, 0); }
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 24px;
+            color: #fff;
+            text-shadow: 
+                3px 3px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
+            margin-bottom: 180px;
+            margin-top: 20px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .pokeball-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 40px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        
+        .pokeball-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .pokeball {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(to bottom, #fff 0%, #fff 50%, #ff0000 50%, #ff0000 100%);
+            border: 4px solid #000;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pokeball:hover {
+            transform: scale(1.1);
+        }
+        
+        .pokeball::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border: 4px solid #000;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .pokeball::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #000;
+            z-index: 1;
+        }
+        
+        .pokeball.selected {
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+        
+        .pokeball.opening {
+            animation: epicOpen 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+        
+        @keyframes epicOpen {
+            0% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            20% { 
+                transform: scale(1.1) rotate(-15deg);
+            }
+            40% { 
+                transform: scale(1.3) rotate(15deg);
+                box-shadow: 0 0 30px rgba(255,255,255,0.8);
+            }
+            60% { 
+                transform: scale(1.5) rotate(-10deg);
+                box-shadow: 0 0 50px rgba(255,255,255,1);
+            }
+            80% { 
+                transform: scale(1.8) rotate(5deg);
+                opacity: 0.7;
+            }
+            100% { 
+                transform: scale(2) rotate(0deg);
+                opacity: 0;
+            }
+        }
+        
+        .triangle-indicator {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 20px solid #ff0000;
+            transition: left 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+        
+        .character-label {
+            font-size: 12px;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
+            text-align: center;
+        }
+        
+        .character-reveal {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 20;
+            pointer-events: none;
+        }
+        
+        /* Shadow backdrop */
+        .character-reveal::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 40%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: -1;
+            filter: blur(20px);
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .character-reveal.show::before {
+            opacity: 1;
+            animation: shadowPulse 2s ease-in-out infinite;
+        }
+        
+        .character-reveal img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+            position: relative;
+            z-index: 1;
+        }
+        
+        .character-reveal.show {
+            opacity: 1;
+            animation: epicReveal 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .character-reveal.show img {
+            animation: pokemonFloat 3s ease-in-out infinite, pokemonGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes epicReveal {
+            0% { 
+                transform: translateX(-50%) translateY(50px) scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            30% {
+                transform: translateX(-50%) translateY(-20px) scale(1.4) rotate(90deg);
+                opacity: 0.8;
+            }
+            60% {
+                transform: translateX(-50%) translateY(10px) scale(0.9) rotate(180deg);
+                opacity: 1;
+            }
+            80% {
+                transform: translateX(-50%) translateY(-5px) scale(1.05) rotate(270deg);
+            }
+            100% { 
+                transform: translateX(-50%) translateY(0) scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pokemonFloat {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-15px) scale(1.05);
+            }
+        }
+        
+        @keyframes pokemonGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255,255,255,0.5)) drop-shadow(0 0 30px rgba(255,215,0,0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255,255,255,0.8)) drop-shadow(0 0 40px rgba(255,215,0,0.6)) drop-shadow(0 0 50px rgba(255,165,0,0.4));
+            }
+        }
+        
+        @keyframes shadowPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Particle effect container */
+        .character-reveal::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: -2;
+            animation: particleBurst 1.5s ease-out;
+        }
+        
+        .character-reveal.show::after {
+            animation: particleBurst 1.5s ease-out;
+        }
+        
+        @keyframes particleBurst {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+        
+        /* Sparkle effects */
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 25;
+        }
+        
+        .sparkle.active {
+            animation: sparkleBurst 1.5s ease-out forwards;
+        }
+        
+        @keyframes sparkleBurst {
+            0% {
+                opacity: 1;
+                transform: scale(0) translate(0, 0);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5) translate(var(--tx), var(--ty));
+            }
+        }
+        
+        .gender-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 11;
+            opacity: 0;
+            transform: scale(0);
+            animation: genderPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 1s forwards;
+        }
+        
+        @keyframes genderPop {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-180deg);
+            }
+            60% {
+                transform: scale(1.3) rotate(10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+        
+        .gender-indicator.female {
+            color: #ff1493;
+        }
+        
+        .gender-indicator.male {
+            color: #4169e1;
+        }
+        
+        .instructions {
+            text-align: center;
+            font-size: 10px;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
+            margin-top: 30px;
+            line-height: 1.8;
+        }
+        
+        .reveal-message {
+            text-align: center;
+            font-size: 14px;
+            color: #fff;
+            text-shadow: 
+                3px 3px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-out;
+        }
+        
+        .reveal-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .due-date {
+            color: #ffd700;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .pokeball-container {
+                gap: 30px;
+            }
+            
+            .pokeball {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .title {
+                font-size: 18px;
+                margin-bottom: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">CHOOSE YOUR CHARACTER</h1>
+        
+        <div class="pokeball-container">
+            <div class="pokeball-wrapper" data-index="0">
+                <div class="pokeball" id="pokeball0"></div>
+                <div class="character-reveal" id="reveal0"></div>
+                <div class="character-label">MOM</div>
+            </div>
+            
+            <div class="pokeball-wrapper" data-index="1">
+                <div class="pokeball" id="pokeball1"></div>
+                <div class="character-reveal" id="reveal1"></div>
+                <div class="character-label">DAD</div>
+            </div>
+            
+            <div class="pokeball-wrapper" data-index="2">
+                <div class="pokeball" id="pokeball2"></div>
+                <div class="character-reveal" id="reveal2"></div>
+                <div class="character-label">BABY GRAY</div>
+            </div>
+            
+            <div class="triangle-indicator" id="triangleIndicator"></div>
+        </div>
+        
+        <div class="instructions">
+            USE ARROW KEYS TO SELECT<br>
+            PRESS ENTER TO CHOOSE
+        </div>
+        
+        <div class="reveal-message" id="revealMessage">
+            <div>A NEW BUDDY IS JOINING THE TEAM!</div>
+            <div class="due-date" id="dueDate">COMING SPRING 2025</div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const GENDER = 'girl'; // Set to 'girl' or 'boy'
+        const DUE_DATE = 'August 2026'; // Set your due date here
+        
+        // State
+        let currentSelection = 0;
+        const totalPokeballs = 3;
+        
+        // Elements
+        const pokeballWrappers = document.querySelectorAll('.pokeball-wrapper');
+        const pokeballs = document.querySelectorAll('.pokeball');
+        const triangleIndicator = document.getElementById('triangleIndicator');
+        const revealMessage = document.getElementById('revealMessage');
+        const dueDate = document.getElementById('dueDate');
+        
+        // Update due date
+        dueDate.textContent = `Coming ${DUE_DATE}`;
+        
+        // Update triangle indicator position
+        function updateIndicator() {
+            const selectedWrapper = pokeballWrappers[currentSelection];
+            const wrapperRect = selectedWrapper.getBoundingClientRect();
+            const containerRect = selectedWrapper.parentElement.getBoundingClientRect();
+            
+            triangleIndicator.style.left = wrapperRect.left - containerRect.left + wrapperRect.width / 2 + 'px';
+        }
+        
+        // Initialize indicator position
+        updateIndicator();
+        
+        // Handle keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                currentSelection = (currentSelection - 1 + totalPokeballs) % totalPokeballs;
+                updateIndicator();
+            } else if (e.key === 'ArrowRight') {
+                currentSelection = (currentSelection + 1) % totalPokeballs;
+                updateIndicator();
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                selectPokeball(currentSelection);
+            }
+        });
+        
+        // Handle click on pokeballs
+        pokeballWrappers.forEach((wrapper, index) => {
+            wrapper.addEventListener('click', () => {
+                currentSelection = index;
+                updateIndicator();
+                selectPokeball(index);
+            });
+        });
+        
+        // Select pokeball
+        function selectPokeball(index) {
+            const pokeball = pokeballs[index];
+            const reveal = document.getElementById(`reveal${index}`);
+            
+            // Add shake animation
+            pokeball.classList.add('selected');
+            
+            setTimeout(() => {
+                pokeball.classList.remove('selected');
+                pokeball.classList.add('opening');
+                
+                // Reveal character after opening animation
+                setTimeout(() => {
+                    let imageSrc = '';
+                    let genderClass = '';
+                    let genderSymbol = '';
+                    
+                    if (index === 0) {
+                        // Mom - Charmander (female)
+                        imageSrc = 'charmander.png';
+                        genderClass = 'female';
+                        genderSymbol = '♀';
+                    } else if (index === 1) {
+                        // Dad - Bulbasaur (male)
+                        imageSrc = 'bulbasaur.png';
+                        genderClass = 'male';
+                        genderSymbol = '♂';
+                    } else if (index === 2) {
+                        // Baby Gray - Squirtle (male)
+                        imageSrc = 'squirtle.png';
+                        genderClass = 'male';
+                        genderSymbol = '♂';
+                    }
+                    
+                    // Create Pokemon image
+                    const pokemonImg = document.createElement('img');
+                    pokemonImg.alt = 'Pokemon';
+                    pokemonImg.style.imageRendering = 'pixelated';
+                    
+                    // Remove background when image loads
+                    pokemonImg.addEventListener('load', function() {
+                        removeBackground(pokemonImg, reveal);
+                    }, { once: true });
+                    
+                    pokemonImg.addEventListener('error', function() {
+                        console.log('Image failed to load:', imageSrc);
+                    }, { once: true });
+                    
+                    pokemonImg.src = imageSrc;
+                    reveal.appendChild(pokemonImg);
+                    
+                    // Create gender indicator
+                    const genderIndicator = document.createElement('div');
+                    genderIndicator.className = `gender-indicator ${genderClass}`;
+                    genderIndicator.textContent = genderSymbol;
+                    reveal.appendChild(genderIndicator);
+                    
+                    // Add screen shake effect
+                    const gameContainer = document.querySelector('.game-container');
+                    gameContainer.classList.add('shake');
+                    setTimeout(() => {
+                        gameContainer.classList.remove('shake');
+                    }, 500);
+                    
+                    // Show the reveal
+                    reveal.classList.add('show');
+                    
+                    // Create sparkle effects
+                    createSparkles(reveal);
+                    
+                    // Show reveal message for Baby Gray
+                    if (index === 2) {
+                        setTimeout(() => {
+                            revealMessage.classList.add('show');
+                        }, 500);
+                    }
+                }, 1000);
+            }, 500);
+        }
+        
+        // Function to create sparkle effects
+        function createSparkles(container) {
+            const sparkleCount = 12;
+            const centerX = container.offsetLeft + container.offsetWidth / 2;
+            const centerY = container.offsetTop + container.offsetHeight / 2;
+            
+            for (let i = 0; i < sparkleCount; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                
+                // Calculate random angle and distance
+                const angle = (Math.PI * 2 * i) / sparkleCount;
+                const distance = 60 + Math.random() * 40;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                sparkle.style.left = `${container.offsetWidth / 2}px`;
+                sparkle.style.top = `${container.offsetHeight / 2}px`;
+                sparkle.style.setProperty('--tx', `${tx}px`);
+                sparkle.style.setProperty('--ty', `${ty}px`);
+                
+                // Random delay for staggered effect
+                sparkle.style.animationDelay = `${Math.random() * 0.3}s`;
+                
+                container.appendChild(sparkle);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    sparkle.classList.add('active');
+                }, 50);
+                
+                // Remove sparkle after animation
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 2000);
+            }
+        }
+        
+        // Function to remove white/light backgrounds from images
+        function removeBackground(img, container) {
+            // Ensure image is fully loaded
+            if (!img.complete) {
+                img.addEventListener('load', function() {
+                    removeBackground(img, container);
+                }, { once: true });
+                return;
+            }
+            
+            // Wait a bit to ensure image is fully loaded
+            setTimeout(() => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    const width = img.naturalWidth || img.width;
+                    const height = img.naturalHeight || img.height;
+                    
+                    if (!width || !height) {
+                        console.log('Image dimensions not available. Width:', width, 'Height:', height);
+                        return;
+                    }
+                    
+                    console.log('Processing image:', width, 'x', height);
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    
+                    // Sample corner pixels to determine background color
+                    const corners = [
+                        [0, 0], // top-left
+                        [width - 1, 0], // top-right
+                        [0, height - 1], // bottom-left
+                        [width - 1, height - 1] // bottom-right
+                    ];
+                    
+                    let bgR = 0, bgG = 0, bgB = 0;
+                    corners.forEach(([x, y]) => {
+                        const idx = (y * width + x) * 4;
+                        bgR += data[idx];
+                        bgG += data[idx + 1];
+                        bgB += data[idx + 2];
+                    });
+                    bgR = Math.round(bgR / 4);
+                    bgG = Math.round(bgG / 4);
+                    bgB = Math.round(bgB / 4);
+                    
+                    console.log('Detected background color:', bgR, bgG, bgB);
+                    
+                    // More aggressive threshold for similarity to background color
+                    const threshold = 50; // Increased threshold to catch more background pixels
+                    const whiteThreshold = 240; // Also check for very light/white colors
+                    
+                    let pixelsRemoved = 0;
+                    
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+                        
+                        // Calculate distance from background color
+                        const distance = Math.sqrt(
+                            Math.pow(r - bgR, 2) + 
+                            Math.pow(g - bgG, 2) + 
+                            Math.pow(b - bgB, 2)
+                        );
+                        
+                        // Check if pixel is very light/white (fallback method)
+                        const isVeryLight = r > whiteThreshold && g > whiteThreshold && b > whiteThreshold;
+                        
+                        // If pixel is similar to background color OR very light/white, make it transparent
+                        if (distance < threshold || isVeryLight) {
+                            data[i + 3] = 0;
+                            pixelsRemoved++;
+                        }
+                    }
+                    
+                    console.log('Pixels removed:', pixelsRemoved, 'out of', data.length / 4);
+                    
+                    ctx.putImageData(imageData, 0, 0);
+                    
+                    // Create new image with processed version
+                    const processedDataUrl = canvas.toDataURL('image/png');
+                    const processedImg = new Image();
+                    processedImg.onload = function() {
+                        // Replace the original image element
+                        img.src = processedImg.src;
+                        img.classList.add('processed');
+                        console.log('Background removal complete');
+                    };
+                    processedImg.src = processedDataUrl;
+                } catch (e) {
+                    console.error('Error processing image:', e);
+                    // If processing fails, use original image
+                }
+            }, 100);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', updateIndicator);
+    </script>
+</body>
+</html>
